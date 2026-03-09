@@ -185,13 +185,13 @@ section {
 /* ===== PROJECT CARDS ===== */
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+  grid-template-columns: 1fr;
   gap: 1.5rem;
-  align-items: start;
+  
 }
 /* スクショ付きカードはフル幅で表示 */
 .project-card.has-screenshot {
-  grid-column: 1 / -1;
+  
 }
 .project-card {
   background: var(--bg-card);
