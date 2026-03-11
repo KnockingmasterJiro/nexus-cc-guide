@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code プラン比較ガイド — nexus SNS攻略事業部</title>
+<style>
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-card: linear-gradient(135deg, #1e2a4a 0%, #1a1a2e 100%);
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0b8;
+  --accent: #7c3aed;
+  --accent-light: #a78bfa;
+  --accent-glow: rgba(124, 58, 237, 0.3);
+  --border: #2a2a4a;
+  --code-bg: #0d1117;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Segoe UI", "Hiragino Sans", "Meiryo", sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent-light);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===== NAV ===== */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(26, 26, 46, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+.nav-logo {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--accent-light);
+  white-space: nowrap;
+}
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.nav-links a {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  transition: color 0.2s;
+}
+.nav-links a:hover {
+  color: var(--accent-light);
+  text-decoration: none;
+}
+
+/* ===== LAYOUT ===== */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+section {
+  padding: 4rem 0 2rem;
+}
+
+/* ===== HERO ===== */
+.hero {
+  text-align: center;
+  padding: 8rem 0 4rem;
+  background: radial-gradient(ellipse at center top, var(--accent-glow) 0%, transparent 60%);
+}
+.hero h1 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #fff 30%, var(--accent-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero .subtitle {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+.hero .dept {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.4rem 1.2rem;
+  border: 1px solid var(--accent);
+  border-radius: 100px;
+  font-size: 0.85rem;
+  color: var(--accent-light);
+}
+
+/* ===== SECTION HEADINGS ===== */
+.section-heading {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.section-heading h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.section-heading p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+.section-number {
+  display: inline-block;
+  width: 2.5rem;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  text-align: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+/* ===== PLAN CARDS ===== */
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.plan-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, border-color 0.2s;
+  position: relative;
+}
+.plan-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+}
+.plan-card.recommended {
+  border-color: var(--accent);
+  box-shadow: 0 0 30px var(--accent-glow);
+}
+.plan-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #fff;
+  padding: 0.2rem 1rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.plan-card .plan-icon {
+  font-size: 2rem;
+  margin-bottom: 0.8rem;
+}
+.plan-card h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.plan-card .plan-price {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--accent-light);
+  margin-bottom: 0.2rem;
+}
+.plan-card .plan-price span {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+.plan-card .plan-price-note {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+.plan-card .plan-desc {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1.2rem;
+  flex: 1;
+}
+.plan-features {
+  list-style: none;
+  padding: 0;
+}
+.plan-features li {
+  padding: 0.4rem 0;
+  padding-left: 1.6rem;
+  position: relative;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+.plan-features li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--success);
+  font-weight: 700;
+}
+.plan-features li.disabled::before {
+  content: "✗";
+  color: #ef4444;
+}
+.plan-features li.disabled {
+  opacity: 0.5;
+}
+
+/* ===== COMPARISON TABLE ===== */
+.table-wrapper {
+  overflow-x: auto;
+  margin: 2rem 0;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.compare-table th,
+.compare-table td {
+  padding: 0.8rem 1rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.compare-table thead th {
+  background: var(--bg-secondary);
+  font-weight: 700;
+  color: var(--accent-light);
+  position: sticky;
+  top: 0;
+}
+.compare-table thead th:first-child {
+  text-align: left;
+}
+.compare-table tbody td:first-child {
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.compare-table tbody tr:hover {
+  background: rgba(124, 58, 237, 0.05);
+}
+.compare-table .check {
+  color: var(--success);
+  font-weight: 700;
+}
+.compare-table .cross {
+  color: #ef4444;
+  opacity: 0.5;
+}
+.compare-table .highlight-col {
+  background: rgba(124, 58, 237, 0.08);
+}
+
+/* ===== DECISION SECTION ===== */
+.decision-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+  gap: 1.5rem;
+}
+.decision-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+}
+.decision-card h4 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.decision-card ul {
+  list-style: none;
+  padding: 0;
+}
+.decision-card li {
+  padding: 0.5rem 0;
+  padding-left: 1.6rem;
+  position: relative;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+.decision-card li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ===== SETUP STEPS ===== */
+.setup-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.step {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  position: relative;
+}
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.step-num {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.step h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.step p, .step li {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+.step ul, .step ol {
+  padding-left: 1.2rem;
+  margin: 0.8rem 0;
+}
+.step li {
+  margin: 0.4rem 0;
+}
+.setup-steps .step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  bottom: -2rem;
+  left: calc(2rem + 1.25rem - 1px);
+  width: 2px;
+  height: 2rem;
+  background: var(--border);
+}
+
+/* ===== CALLOUT ===== */
+.callout {
+  background: rgba(124, 58, 237, 0.08);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+.callout strong {
+  color: var(--accent-light);
+}
+.callout.warning {
+  border-left-color: var(--warning);
+  background: rgba(245, 158, 11, 0.08);
+}
+.callout.warning strong {
+  color: var(--warning);
+}
+
+/* ===== FAQ ===== */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.faq-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.faq-question {
+  padding: 1.2rem 1.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  transition: background 0.2s;
+}
+.faq-question:hover {
+  background: rgba(124, 58, 237, 0.05);
+}
+.faq-question .arrow {
+  transition: transform 0.3s;
+  color: var(--accent-light);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.faq-item.open .faq-question .arrow {
+  transform: rotate(180deg);
+}
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.faq-answer-inner {
+  padding: 0 1.5rem 1.2rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+/* ===== SOURCES ===== */
+.sources {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-top: 2rem;
+}
+.sources h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--accent-light);
+}
+.sources ul {
+  list-style: none;
+  padding: 0;
+}
+.sources li {
+  padding: 0.4rem 0;
+  font-size: 0.85rem;
+}
+.sources li a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  text-align: center;
+  padding: 3rem 0;
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+.footer span {
+  color: var(--accent-light);
+}
+.footer a {
+  color: var(--accent-light);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .nav {
+    padding: 0.6rem 1rem;
+    gap: 1rem;
+  }
+  .nav-links {
+    gap: 0.8rem;
+  }
+  .hero {
+    padding: 6rem 0 3rem;
+  }
+  section {
+    padding: 3rem 0 1.5rem;
+  }
+  .step, .decision-card {
+    padding: 1.5rem;
+  }
+  .plan-card {
+    padding: 1.5rem;
+  }
+  .compare-table {
+    font-size: 0.8rem;
+  }
+  .compare-table th,
+  .compare-table td {
+    padding: 0.6rem 0.5rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">Claude Code Guide</div>
+  <div class="nav-links">
+    <a href="index.html">導入ガイドに戻る</a>
+    <a href="#plans">プラン一覧</a>
+    <a href="#compare">比較表</a>
+    <a href="#choose">どっちがいい？</a>
+    <a href="#howto">契約手順</a>
+    <a href="#faq">FAQ</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <h1>Claude Code プラン比較ガイド</h1>
+    <p class="subtitle">個人プランとチームプラン、どっちに入ればいい？ — 初めての人向けにわかりやすく解説</p>
+    <div class="dept">nexus SNS攻略事業部</div>
+  </div>
+</header>
+
+<!-- SECTION 1: そもそもプランって何？ -->
+<section id="plans">
+  <div class="container">
+    <div class="section-heading">
+      <div class="section-number">1</div>
+      <h2>そもそもプランって何？</h2>
+      <p>Claude Code を使うには有料プランへの加入が必要です。プランによって「使える量」と「機能」が変わります</p>
+    </div>
+
+    <div class="callout" style="margin-bottom: 2rem;">
+      <strong>ざっくり言うと：</strong> Claude Code は「AIに仕事を手伝ってもらうサービス」です。プランは「月額いくら払うか」の選択肢。高いプランほどたくさん使えます。スマホの通信プランみたいなものだと思ってください。
+    </div>
+
+    <div class="plans-grid">
+
+      <!-- Free -->
+      <div class="plan-card">
+        <div class="plan-icon">🆓</div>
+        <h3>Free</h3>
+        <div class="plan-price">$0</div>
+        <div class="plan-price-note">無料</div>
+        <p class="plan-desc">Webチャット（claude.ai）だけ使える無料プラン。Claude Code は使えません。</p>
+        <ul class="plan-features">
+          <li>claude.ai でチャットできる</li>
+          <li>使える回数が少ない</li>
+          <li class="disabled">Claude Code は使えない</li>
+        </ul>
+      </div>
+
+      <!-- Pro -->
+      <div class="plan-card">
+        <div class="plan-icon">👤</div>
+        <h3>Pro（個人向け）</h3>
+        <div class="plan-price">$20 <span>/ 月</span></div>
+        <div class="plan-price-note">約 3,000円 / 月</div>
+        <p class="plan-desc">Claude Code が使える最安プラン。「まず試してみたい」ならこれ。</p>
+        <ul class="plan-features">
+          <li>Claude Code が使える</li>
+          <li>claude.ai も使える</li>
+          <li>使用量：基準（1x）</li>
+          <li class="disabled">管理機能なし（個人利用）</li>
+        </ul>
+      </div>
+
+      <!-- Max -->
+      <div class="plan-card">
+        <div class="plan-icon">⚡</div>
+        <h3>Max（個人・ヘビー向け）</h3>
+        <div class="plan-price">$100〜200 <span>/ 月</span></div>
+        <div class="plan-price-note">約 15,000〜30,000円 / 月</div>
+        <p class="plan-desc">ガッツリ使う人向け。使用量がProの5倍〜20倍になる。翁が使っているのはこれ。</p>
+        <ul class="plan-features">
+          <li>Claude Code が使える</li>
+          <li>使用量：5x（$100）/ 20x（$200）</li>
+          <li>一番賢いモデルが使い放題</li>
+          <li class="disabled">管理機能なし（個人利用）</li>
+        </ul>
+      </div>
+
+      <!-- Team -->
+      <div class="plan-card recommended">
+        <div class="plan-badge">チームにおすすめ</div>
+        <div class="plan-icon">👥</div>
+        <h3>Team（チーム向け）</h3>
+        <div class="plan-price">$25〜150 <span>/ 人 / 月</span></div>
+        <div class="plan-price-note">席の種類で料金が変わる（下で解説）</div>
+        <p class="plan-desc">5人以上のチームで使うプラン。管理者が請求・メンバーを一括管理できる。</p>
+        <ul class="plan-features">
+          <li>Claude Code が使える（全席）</li>
+          <li>管理者がメンバーを一括管理</li>
+          <li>請求がまとまる（経費処理がラク）</li>
+          <li>共有プロジェクト機能</li>
+          <li>SSO・ドメイン認証対応</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: 比較表 -->
+<section id="compare">
+  <div class="container">
+    <div class="section-heading">
+      <div class="section-number">2</div>
+      <h2>プラン比較表</h2>
+      <p>一目でわかる機能・料金の違い</p>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Free</th>
+            <th>Pro</th>
+            <th>Max 5x</th>
+            <th>Max 20x</th>
+            <th class="highlight-col">Team Standard</th>
+            <th class="highlight-col">Team Premium</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>月額料金</td>
+            <td>$0</td>
+            <td>$20</td>
+            <td>$100</td>
+            <td>$200</td>
+            <td class="highlight-col">$25〜30 / 人</td>
+            <td class="highlight-col">$100〜150 / 人</td>
+          </tr>
+          <tr>
+            <td>年払い割引</td>
+            <td>—</td>
+            <td>$17/月</td>
+            <td>—</td>
+            <td>—</td>
+            <td class="highlight-col">$25/人/月</td>
+            <td class="highlight-col">$100/人/月</td>
+          </tr>
+          <tr>
+            <td>Claude Code</td>
+            <td class="cross">✗</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="highlight-col check">✓</td>
+            <td class="highlight-col check">✓</td>
+          </tr>
+          <tr>
+            <td>claude.ai（Webチャット）</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="check">✓</td>
+            <td class="highlight-col check">✓</td>
+            <td class="highlight-col check">✓</td>
+          </tr>
+          <tr>
+            <td>使用量（Pro比）</td>
+            <td>少ない</td>
+            <td>1x（基準）</td>
+            <td>5x</td>
+            <td>20x</td>
+            <td class="highlight-col">1.25x</td>
+            <td class="highlight-col">6.25x</td>
+          </tr>
+          <tr>
+            <td>契約単位</td>
+            <td>個人</td>
+            <td>個人</td>
+            <td>個人</td>
+            <td>個人</td>
+            <td class="highlight-col">チーム</td>
+            <td class="highlight-col">チーム</td>
+          </tr>
+          <tr>
+            <td>最低人数</td>
+            <td>—</td>
+            <td>1人</td>
+            <td>1人</td>
+            <td>1人</td>
+            <td class="highlight-col">5人</td>
+            <td class="highlight-col">5人</td>
+          </tr>
+          <tr>
+            <td>管理者ツール</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="highlight-col check">✓</td>
+            <td class="highlight-col check">✓</td>
+          </tr>
+          <tr>
+            <td>一括請求</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="highlight-col check">✓</td>
+            <td class="highlight-col check">✓</td>
+          </tr>
+          <tr>
+            <td>共有プロジェクト</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="highlight-col check">✓</td>
+            <td class="highlight-col check">✓</td>
+          </tr>
+          <tr>
+            <td>SSO / ドメイン認証</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="cross">✗</td>
+            <td class="highlight-col check">✓</td>
+            <td class="highlight-col check">✓</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <strong>「使用量」って何？</strong> Claude Code に指示を出すと、裏側で「トークン」というものを消費します。使用量が多い = 1日にたくさん指示を出せる、ということ。少ないプランでも使えますが、たくさん使うと「今日はここまでです」と制限がかかります。翌日にはリセットされます。
+    </div>
+
+    <div class="callout" style="margin-top: 0.5rem;">
+      <strong>Team の「Standard席」と「Premium席」って？</strong> 同じチーム内でも、人によって席の種類を分けられます。たまにしか使わない人は Standard（安い）、ガッツリ使う人は Premium（使用量が多い）、というように混在OK。全員同じ席にする必要はありません。
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: どっちがいい？ -->
+<section id="choose">
+  <div class="container">
+    <div class="section-heading">
+      <div class="section-number">3</div>
+      <h2>結局、どっちに入ればいい？</h2>
+      <p>チームの状況に合わせて選ぼう</p>
+    </div>
+
+    <div class="decision-cards">
+      <div class="decision-card">
+        <h4>👤 個人プラン（Pro / Max）がいいケース</h4>
+        <ul>
+          <li><strong>使う人が5人未満</strong> — Team プランは最低5人なので、少人数なら個人プラン一択</li>
+          <li><strong>まずは試したい</strong> — Pro（$20）で始めて、本格的に使うなら後からTeamに変更できる</li>
+          <li><strong>各自で自由に使いたい</strong> — 管理者を置かず、それぞれが好きに契約・解約できる</li>
+          <li><strong>コスト重視</strong> — Pro $20 が最安。月3,000円で Claude Code が使える</li>
+        </ul>
+      </div>
+
+      <div class="decision-card" style="border-color: var(--accent);">
+        <h4>👥 チームプランがいいケース</h4>
+        <ul>
+          <li><strong>5人以上で使う</strong> — 管理者がメンバーの追加・削除を一括管理できて便利</li>
+          <li><strong>会社の経費で落としたい</strong> — 請求がまとまるので、経理処理がラク</li>
+          <li><strong>入退社の管理をしたい</strong> — 辞めた人のアカウントをすぐ停止できる</li>
+          <li><strong>プロジェクトを共有したい</strong> — チーム内でナレッジを共有する機能がある</li>
+          <li><strong>セキュリティが気になる</strong> — SSO（シングルサインオン）やドメイン認証に対応</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top: 2rem;">
+      <strong>おすすめの進め方：</strong> まだ誰も使ったことがないなら、まず <strong>個人Pro（$20/月）で1〜2人が試す</strong> → 良さそうなら <strong>チームプランに移行</strong>、が一番リスクが少ないです。個人プランの契約は後からいつでもキャンセルできます。
+    </div>
+
+    <div class="callout warning" style="margin-top: 0.5rem;">
+      <strong>注意：</strong> 個人アカウントからチームプランに「アップグレード」しても、個人アカウントのデータ（会話履歴など）はチームに引き継がれません。個人の有料契約は別途キャンセルが必要です。
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: 契約手順 -->
+<section id="howto">
+  <div class="container">
+    <div class="section-heading">
+      <div class="section-number">4</div>
+      <h2>契約手順</h2>
+      <p>個人プラン / チームプラン、それぞれの入り方</p>
+    </div>
+
+    <!-- 個人Pro -->
+    <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem; padding-left: 0.5rem; border-left: 3px solid var(--accent);">
+      👤 個人プラン（Pro）の契約手順
+    </h3>
+
+    <div class="setup-steps" style="margin-bottom: 3rem;">
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">1</div>
+          <h3>claude.ai にアクセスしてアカウント作成</h3>
+        </div>
+        <p>ブラウザで <strong>claude.ai</strong> を開き、メールアドレスを入力。Google アカウントでの登録も可能です。メール認証を完了させてください。</p>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">2</div>
+          <h3>設定画面から「Upgrade plan」</h3>
+        </div>
+        <p>ログイン後、画面左下にある自分の名前（またはイニシャル）をクリック → 設定メニューの「<strong>Billing</strong>」→「<strong>Upgrade plan</strong>」をクリック。</p>
+        <div class="callout">
+          <strong>直接アクセスもOK：</strong> <a href="https://claude.ai/upgrade" target="_blank">claude.ai/upgrade</a> をブラウザで開いても同じ画面に行けます。
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">3</div>
+          <h3>「Pro plan」を選択して支払い情報を入力</h3>
+        </div>
+        <p>「<strong>Get Pro plan</strong>」をクリック → 月払い or 年払いを選択 → クレジットカード情報を入力 →「<strong>Subscribe</strong>」で完了。</p>
+        <p style="margin-top: 0.5rem;">これで Claude Code が使えるようになります。あとは<a href="index.html#setup">導入ガイドのセットアップ手順</a>に従ってインストールしてください。</p>
+      </div>
+    </div>
+
+    <!-- Team -->
+    <h3 style="font-size: 1.3rem; margin-bottom: 1.5rem; padding-left: 0.5rem; border-left: 3px solid var(--accent);">
+      👥 チームプランの契約手順（管理者向け）
+    </h3>
+
+    <div class="setup-steps">
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">1</div>
+          <h3>会社のメールアドレスで claude.ai にログイン</h3>
+        </div>
+        <p><strong>claude.ai</strong> にアクセスし、<strong>会社のメールアドレス</strong>でアカウントを作成。Gmail や Yahoo などのフリーメールでは Team プランを契約できません。</p>
+        <div class="callout warning">
+          <strong>重要：</strong> @gmail.com, @yahoo.co.jp などの個人メールでは Team プランに入れません。必ず会社ドメインのメールアドレス（例: @nexus.co.jp）を使ってください。
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">2</div>
+          <h3>Team プランを選択して組織を作成</h3>
+        </div>
+        <p>ログイン後、<a href="https://claude.ai/upgrade" target="_blank">claude.ai/upgrade</a> にアクセスして「Team」プランを選択。組織名を入力し、支払い情報を登録します。</p>
+        <p style="margin-top: 0.5rem;">Standard席（$25〜30/人）と Premium席（$100〜150/人）を組み合わせて席数を決めます。最低5席から。</p>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">3</div>
+          <h3>メンバーを招待する</h3>
+        </div>
+        <p>組織ができたら、メンバーを招待します。方法は3つ：</p>
+        <ul>
+          <li><strong>メールで招待</strong> — 設定 → Organization →「Add member」→ メールアドレスを入力。席の種類（Standard / Premium）とロールを指定</li>
+          <li><strong>招待リンクで招待</strong> — 共有リンクを発行して、Slack やメールで配布。リンクをクリックした人が自動で参加できる</li>
+          <li><strong>メンバー同士の招待</strong> — 管理者でなくても、既存メンバーが同僚をメール招待できる</li>
+        </ul>
+        <div class="callout warning" style="margin-top: 1rem;">
+          <strong>注意：</strong> 招待を送った時点で席が1つ消費されます（相手がまだ参加していなくても）。席数の管理に気をつけてください。
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">4</div>
+          <h3>メンバーが参加 → Claude Code を使い始める</h3>
+        </div>
+        <p>招待されたメンバーは、メールのリンクをクリックして組織に参加 → あとは<a href="index.html#setup">導入ガイドのセットアップ手順</a>に従って Claude Code をインストールするだけ。</p>
+        <p style="margin-top: 0.5rem;">管理者は「設定 → Organization」からメンバーの追加・削除・席の変更がいつでもできます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-heading">
+      <div class="section-number">5</div>
+      <h2>よくある質問</h2>
+      <p>プラン選びで迷ったらここを見てください</p>
+    </div>
+
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>無料プランでは Claude Code は使えないの？</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            はい、使えません。Claude Code を使うには Pro プラン（$20/月）以上への加入が必要です。無料プランで使えるのは claude.ai のWebチャットだけです。
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>Pro（$20）で足りる？ Max にした方がいい？</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            「1日に数回の指示」程度なら Pro で十分です。ただし、長時間ガッツリ開発する場合は使用量の上限に達しやすく、「今日はここまで」と止まることがあります。その場合は Max（$100〜）にすると快適になります。まずは Pro で始めて、制限に引っかかるようなら Max に上げるのがおすすめです。
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>Team プランは 5人以下でも入れる？</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            いいえ、Team プランは最低5人（5席）からです。4人以下の場合は各自で個人プラン（Pro や Max）に加入してください。
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>Team で Standard席と Premium席を混ぜられる？</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            はい、混在できます。たとえば「Claude Code をガッツリ使う人は Premium、たまに使う人は Standard」というように、人ごとに席の種類を変えられます。あとから変更もできます。
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>個人プランから Team に乗り換えたら、今までのデータは引き継がれる？</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            いいえ、引き継がれません。個人アカウントと Team 組織は別扱いです。Team に参加した後、個人の有料サブスクリプションは別途キャンセルする必要があります（自動では解約されません）。
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>会社のフリーメール（Gmail）で Team プランに入れる？</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            いいえ、Team プランの管理者アカウントには会社ドメインのメールアドレスが必要です（@gmail.com や @yahoo.co.jp は不可）。ただし、管理者がメンバーを招待する際に異なるドメインのメールアドレスを許可する設定もあります。
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>支払いはドル建て？ 日本円では払えない？</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            基本はドル建て（USD）ですが、地域によって表示通貨が異なる場合があります。日本のクレジットカードで問題なく支払えますが、為替レートとカード会社の外貨手数料がかかります。<a href="https://claude.ai/upgrade" target="_blank">claude.ai/upgrade</a> にアクセスすると、あなたの地域での価格が表示されます。
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>いつでも解約できる？</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            はい、いつでも解約できます。解約しても、残りの期間（月末まで）は引き続き利用可能です。年払いの場合も途中解約は可能ですが、日割り返金の扱いについては公式ヘルプを確認してください。
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SOURCES -->
+<section>
+  <div class="container">
+    <div class="sources">
+      <h3>参考リンク（公式ソース）</h3>
+      <ul>
+        <li><a href="https://claude.com/pricing" target="_blank">Plans &amp; Pricing | Claude by Anthropic（公式料金ページ）</a></li>
+        <li><a href="https://support.claude.com/en/articles/9266767-what-is-the-team-plan" target="_blank">What is the Team plan? | Claude Help Center</a></li>
+        <li><a href="https://support.claude.com/en/articles/9267247-how-do-i-get-started-with-the-team-plan" target="_blank">Get started with the Team plan | Claude Help Center</a></li>
+        <li><a href="https://support.claude.com/en/articles/8325609-how-do-i-sign-up-for-the-pro-plan" target="_blank">How do I sign up for the Pro plan? | Claude Help Center</a></li>
+        <li><a href="https://support.claude.com/en/articles/11049752-how-do-i-sign-up-for-the-max-plan" target="_blank">How do I sign up for the Max plan? | Claude Help Center</a></li>
+        <li><a href="https://support.claude.com/en/articles/13133750-manage-members-on-team-and-enterprise-plans" target="_blank">Manage members on Team and Enterprise plans | Claude Help Center</a></li>
+        <li><a href="https://support.claude.com/en/articles/13776697-join-an-organization-via-invite-link" target="_blank">Join an organization via invite link | Claude Help Center</a></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <p>nexus SNS攻略事業部 — <span>Claude Code</span> プラン比較ガイド</p>
+    <p style="margin-top: 0.5rem;"><a href="index.html">← 導入ガイドに戻る</a></p>
+  </div>
+</footer>
+
+<script>
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const answer = item.querySelector('.faq-answer');
+  const isOpen = item.classList.contains('open');
+
+  // close all
+  document.querySelectorAll('.faq-item').forEach(i => {
+    i.classList.remove('open');
+    i.querySelector('.faq-answer').style.maxHeight = null;
+  });
+
+  // toggle current
+  if (!isOpen) {
+    item.classList.add('open');
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+  }
+}
+</script>
+
+</body>
+</html>
