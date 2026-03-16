@@ -814,22 +814,18 @@ section {
         </div>
       </div>
 
-      <!-- Step 2: Node.js + Git -->
+      <!-- Step 2: Git -->
       <div class="step">
         <div class="step-header">
           <div class="step-num">2</div>
-          <h3>Node.js と Git をインストール</h3>
+          <h3>Git をインストール</h3>
         </div>
-        <p>Claude Code を動かすのに必要なソフト2つを、<strong>コマンドだけで</strong>インストールします。</p>
-        <p>ターミナル（Step 1で開いた画面）に、以下を<strong>1行ずつコピペして Enter</strong>:</p>
+        <p>Claude Code を動かすのに必要なソフトを、<strong>コマンドだけで</strong>インストールします。</p>
+        <p>ターミナル（Step 1で開いた画面）に、以下を<strong>コピペして Enter</strong>:</p>
         <div class="code-block">
-          <span class="comment"># ① Node.js をインストール（Claude Code の土台）</span><br>
-          winget install OpenJS.NodeJS.LTS<br>
-          <br>
-          <span class="comment"># ② Git をインストール（ファイルの変更履歴を管理するツール）</span><br>
           winget install Git.Git
         </div>
-        <p>それぞれ「インストールしますか？」と聞かれたら <strong>Y を押して Enter</strong>。数分で完了します。</p>
+        <p>「インストールしますか？」と聞かれたら <strong>Y を押して Enter</strong>。数分で完了します。</p>
 
         <div class="callout">
           <strong>winget って何？</strong> — Windows に最初から入っている「アプリストア」のコマンド版です。ソフトのダウンロード〜インストールを全部自動でやってくれます。
@@ -838,13 +834,11 @@ section {
         <p style="margin-top: 1rem;">インストールが終わったら、<strong>ターミナルを一度閉じて開き直してください</strong>（これ重要！）。<br>その後、以下をコピペして確認:</p>
         <div class="code-block">
           <span class="comment"># バージョンが表示されればOK</span><br>
-          node --version<br>
           git --version
         </div>
-        <p><code>v22.x.x</code> や <code>git version 2.x.x</code> のように表示されれば成功です。</p>
+        <p><code>git version 2.x.x</code> のように表示されれば成功です。</p>
 
         <div class="callout">
-          <strong>Node.js って何？</strong> — Claude Code を動かすための土台ソフトです。<br>
           <strong>Git って何？</strong> — 「いつ・何を変えたか」の記録を自動で残してくれるツールです。間違えても元に戻せるので安心。Claude Code が裏側で自動的に使っています。
         </div>
       </div>
@@ -857,13 +851,13 @@ section {
           <div class="step-num">3</div>
           <h3>Claude Code をインストール</h3>
         </div>
-        <p>ターミナルに以下を<strong>コピペして Enter</strong>:</p>
+        <p>ターミナル（PowerShell）に以下を<strong>コピペして Enter</strong>:</p>
         <div class="code-block">
-          npm install -g @anthropic-ai/claude-code
+          irm https://claude.ai/install.ps1 | iex
         </div>
-        <p>文字がたくさん流れますが、そのまま待ってください。1〜2分で完了します。</p>
+        <p>自動でダウンロードとインストールが始まります。1〜2分で完了します。</p>
         <div class="callout">
-          <strong>npm って何？</strong> — Node.js を入れたときに一緒にインストールされた「アプリストア」のようなものです。ここからClaude Code をダウンロードしています。
+          <strong>このコマンドは何をしている？</strong> — Anthropic 公式のインストーラーを自動でダウンロードして実行しています。必要なものは全部まとめてインストールされます。
         </div>
       </div>
 
