@@ -861,10 +861,40 @@ section {
         </div>
       </div>
 
-      <!-- Step 4 -->
+      <!-- Step 4: ターミナル再起動（重要） -->
+      <div class="step" style="border: 1px solid #f59e0b;">
+        <div class="step-header">
+          <div class="step-num" style="background: #f59e0b;">4</div>
+          <h3>ターミナルを閉じて、開き直す（重要！）</h3>
+        </div>
+        <p>インストールが完了したら、<strong>今開いている PowerShell を × で閉じて</strong>ください。<br>
+        そして、Step 1 と同じやり方で<strong>新しく PowerShell を開き直し</strong>ます。</p>
+        <div class="callout" style="border-left-color: #f59e0b;">
+          <strong>なぜ開き直す必要があるの？</strong> — インストール時に「claude コマンドはここにありますよ」という情報（PATH）が追加されますが、<strong>今開いているターミナルにはその情報が反映されません</strong>。開き直すことで新しい情報が読み込まれ、<code>claude</code> コマンドが使えるようになります。
+        </div>
+        <p style="margin-top: 1rem;">開き直したら、以下を打って確認:</p>
+        <div class="code-block">
+          claude --version
+        </div>
+        <p><code>1.x.x</code> のようなバージョン番号が表示されれば成功です。</p>
+        <div class="callout" style="border-left-color: #ef4444;">
+          <strong>「claude が見つからない」と言われたら？</strong><br>
+          ターミナルを開き直しても解決しない場合は、以下を試してください：<br><br>
+          <strong>① フルパスで直接確認:</strong>
+          <div class="code-block" style="margin: 0.5rem 0;">& "$env:USERPROFILE\.local\bin\claude.exe" --version</div>
+          ↑でバージョンが表示されるなら、PATH の設定がうまくいっていないだけです。以下で手動追加：
+          <div class="code-block" style="margin: 0.5rem 0;">[Environment]::SetEnvironmentVariable("Path", $env:Path + ";$env:USERPROFILE\.local\bin", "User")</div>
+          追加後、<strong>もう一度ターミナルを開き直して</strong> <code>claude --version</code> を試してください。<br><br>
+          <strong>② それでもダメなら、診断ツール:</strong>
+          <div class="code-block" style="margin: 0.5rem 0;">& "$env:USERPROFILE\.local\bin\claude.exe" doctor</div>
+          問題を自動で検出・修正してくれます。
+        </div>
+      </div>
+
+      <!-- Step 5 -->
       <div class="step">
         <div class="step-header">
-          <div class="step-num">4</div>
+          <div class="step-num">5</div>
           <h3>作業フォルダを作って、Claude Code を起動</h3>
         </div>
         <p>Claude Code は<strong>フォルダの中で動きます</strong>。まず作業用のフォルダを用意しましょう。</p>
@@ -888,10 +918,10 @@ section {
         <p>初回だけ、<strong>ブラウザが自動で開いて</strong>ログイン画面が表示されます。<br>Claudeのアカウントでログインすれば認証完了。ターミナルに戻ると Claude Code が使えるようになっています。</p>
       </div>
 
-      <!-- Step 5 -->
+      <!-- Step 6 -->
       <div class="step">
         <div class="step-header">
-          <div class="step-num">5</div>
+          <div class="step-num">6</div>
           <h3>最初のお試し — 「おみくじアプリを作って」</h3>
         </div>
         <p>Claude Code が起動すると、<strong>入力待ちの状態</strong>になります。<br>試しにこう入力して Enter を押してみてください:</p>
@@ -907,10 +937,10 @@ section {
         </div>
       </div>
 
-      <!-- Step 6 -->
+      <!-- Step 7 -->
       <div class="step">
         <div class="step-header">
-          <div class="step-num">6</div>
+          <div class="step-num">7</div>
           <h3>CLAUDE.md — 「マイルール」を設定しよう（慣れてきたら）</h3>
         </div>
         <p>作業フォルダの中に <code>CLAUDE.md</code> というファイルを作っておくと、Claude に「毎回こういうルールで動いてね」と指示できます。</p>
@@ -978,7 +1008,7 @@ section {
       <div class="risk-card info">
         <h4><span class="risk-icon">&#128193;</span> 必ず専用フォルダの中で作業する</h4>
         <p>Claude Code は<strong>起動したフォルダの中のファイルを読み書き</strong>します。デスクトップや「ドキュメント」フォルダで直接起動すると、関係ないファイルを触ってしまう可能性があります。</p>
-        <p><strong>必ず Step 4 で作ったような専用フォルダの中で起動してください。</strong></p>
+        <p><strong>必ず Step 5 で作ったような専用フォルダの中で起動してください。</strong></p>
       </div>
 
     </div>
